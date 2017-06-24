@@ -166,7 +166,7 @@ export class AboutPage {
         geocoder.geocode({ 'location': latlng }, function (results, status) {
           if (status === 'OK' && !results[0].formatted_address.includes("Unnamed")) {
             console.log(results[0].formatted_address);
-            var id = 2;
+            var id = 3;
             // ---------------------------------------
             $.ajax({
               url: 'http://62.75.162.57:3000//updateTarget/' + id + '/' + results[0].formatted_address,
