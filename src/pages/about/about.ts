@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import { Geolocation } from '@ionic-native/geolocation';
+import { NavController, AlertController } from 'ionic-angular';
+import { Geolocation } from '@ionic-native/geolocation/index';
 import * as $ from 'jquery'
 
 declare var google;
@@ -19,15 +19,66 @@ export class AboutPage {
   current;
   previous;
 
-  constructor(public navCtrl: NavController, public geolocation: Geolocation) {
+  constructor(public navCtrl: NavController, public geolocation: Geolocation, public alertCtrl: AlertController) {
     var that = this;
 
-    $.get('http://62.75.162.57:3000/destinations', function (json) {
-      console.log(json);
-      that.stack = json;
-      that.loadMap();
+    $.ajax({
+      url: 'http://62.75.162.57:3000/destinations',
+      data: {
+        format: 'json'
+      },
+      error: function (err) {
+        console.log('error while retrieving data from the backend' + err)
+      },
+      success: function (json) {
+        console.log(json);
+        that.stack = json;
+        that.loadMap();
 
+      },
+      type: 'GET',
+      async: false
     });
+
+    setInterval(function () {
+      var thatthat = that;
+
+      $.ajax({
+        url: 'http://62.75.162.57:3000/isUpdate',
+        data: {
+          format: 'json'
+        },
+        error: function (err) {
+          console.log('error while retrieving data from the backend' + err)
+        },
+        success: function (data) {
+          console.log(data);
+          if (data) {
+            $.ajax({
+              url: 'http://62.75.162.57:3000/destinations',
+              data: {
+                format: 'json'
+              },
+              error: function (err) {
+                console.log('error while retrieving data from the backend' + err)
+              },
+              success: function (json) {
+
+                that.stack = json;
+                that.loadMap();
+
+              },
+              type: 'GET',
+              async: false
+            });
+          }
+        },
+        type: 'GET',
+        async: false
+      });
+
+
+    }, 2000);
 
   }
 
@@ -55,9 +106,52 @@ export class AboutPage {
 
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
+      var geocoder = new google.maps.Geocoder;
 
       var trafficLayer = new google.maps.TrafficLayer();
       trafficLayer.setMap(this.map);
+
+
+      google.maps.event.addListener(this.map, "click", function (event) {
+        var lat = event.latLng.lat();
+        var lng = event.latLng.lng();
+        // populate yor box/field with lat, lng
+        window.alert("Lat=" + lat + "; Lng=" + lng);
+
+
+        var latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+        geocoder.geocode({ 'location': latlng }, function (results, status) {
+          if (status === 'OK' && !results[0].formatted_address.includes("Unnamed")) {
+            console.log(results[0].formatted_address);
+            // ---------------------------------------
+            $.ajax({
+              url: 'http://62.75.162.57:3000/addOnTheGoPackage',
+              type: 'post',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                "empfeanger_id": 1, 
+                "ablageort_lat": 0,
+                "ablageort_lng": 0,
+                "parkhinweis_lat": 0,
+                "parkhinweis_lng": 0, 
+                "addresse_on_the_go": results[0].formatted_address
+              }),
+              success: function (data, textStatus, jQxhr) {
+                $('#response pre').html(JSON.stringify(data));
+                console.log("SUCCESFULL POST");
+              },
+              error: function (jqXhr, textStatus, errorThrown) {
+                console.log(errorThrown);
+                console.log("ERR POST");
+              }
+            });
+          
+          } else {
+            window.alert('Geocoder failed due to: ' + status);
+          }
+        });
+      });
 
 
       var directionsService = new google.maps.DirectionsService;
@@ -67,18 +161,11 @@ export class AboutPage {
 
       this.stack.forEach((dest, index) => {
         // destinations.push(new google.maps.LatLng(dest.latitude, dest.longitude));
-        destinations.push({ location: dest.ort + ', ' + dest.strasse, stopover: true });
-        last = dest.ort + ', ' + dest.strasse;
+        if (dest.status != 'delivered') {
+          destinations.push({ location: dest.ort + ', ' + dest.strasse, stopover: true });
+          last = dest.ort + ', ' + dest.strasse;
 
-        //   let marker = new google.maps.Marker({
-        //     map: this.map,
-        //     animation: google.maps.Animation.DROP,
-        //     position: new google.maps.LatLng(dest.latitude, dest.longitude)
-        //   });
-
-        //   marker.setMap(this.map);
-
-        console.log(index, this.stack.length - 1)
+        }
         if (index === this.stack.length - 1) {
           this.calculateAndDisplayRoute(directionsService, directionsDisplay, destinations, startLocation, last);
 
@@ -91,7 +178,6 @@ export class AboutPage {
     });
 
   }
-
 
   calculateAndDisplayRoute(directionsService, directionsDisplay, waypts, origin, destination) {
 
@@ -124,4 +210,41 @@ export class AboutPage {
     });
   }
 
+  pickUp(item) {
+
+    let alert = this.alertCtrl.create({
+      title: 'Paket zugestellt?',
+      message: 'Haben Sie das Paket erfolgreich an ' + item.name + ', ' + item.vorname + 'übergeben?',
+      buttons: [
+        {
+          text: 'Abbrechen',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Ja, Paket abgegeben',
+          handler: () => {
+            console.log('update');
+            $.ajax({
+              url: 'http://62.75.162.57:3000/update/' + item.id + '/delivered',
+              data: {
+                format: 'json'
+              },
+              error: function (err) {
+                console.log('error while update')
+              },
+              success: function (json) {
+                console.log('update successful');
+              },
+              type: 'GET',
+              async: false
+            });
+          }
+        }
+      ]
+    });
+    alert.present();
+
+  }
 }

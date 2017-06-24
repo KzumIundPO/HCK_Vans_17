@@ -1,41 +1,51 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Profile</ion-title>
+    <ion-title>Profil</ion-title>
   </ion-navbar>
 </ion-header>
-
+<div align="center">
 <ion-content padding>
   <ion-grid class="grid">
   <ion-row>
     <ion-col col-3>
-      <img src="http://oendrila313.eventfulindia.com/images/defaultUserImgm.png">
+      <img src="https://www.atomix.com.au/media/2015/06/atomix_user31.png" widht="150" height="150">
     </ion-col>
     <ion-col col-2>
       <!-- xxx -->
     </ion-col>
+    <div *ngFor="let user of users">
     <ion-col col-0>
-      <ion-list *ngFor="let user of users">
+      <ion-list>
         <ion-item>
-          <ion-avatar item-left>
-          <h3>{{user.vorname}}
-          <h3>{{user.nachname}}
-          <h3>{{user.coins}}
-<br>
-<h3>Ankommende Lieferungen: 3</h3>
-<br>
-<br>
-
+        {{user.vorname}}
+        </ion-item>
+        <ion-item>
+        {{user.nachname}}
+        </ion-item>
+        <ion-item>
+        {{user.coins}}
+        </ion-item>
+        <ion-item>
+        Ankommende Lieferungen: 3
+        </ion-item>
+      </ion-list>
+</ion-col>
+  <div class="list_left">
 <ion-list>
   <ion-item>
     <ion-label>Packet Abgabe Ort</ion-label>
-    <ion-select *ngFor="let user of users">
+    <ion-select>
       <ion-option>{{user.pickUp_person.lat}}, {{user.pickUp_person.lng}}</ion-option>
+      <ion-option>Neue Location hinzufügen</ion-option>
     </ion-select>
   </ion-item>
   <ion-item>
     <ion-label>Parkmöglichkeit</ion-label>
-    <ion-select *ngFor="let user of users">
-      <ion-option>{{car_parking.lat}}, {{car_parking.lng}}</ion-option>
+    <ion-select>
+      <ion-option>{{user.car_parking.lat}}, {{user.car_parking.lng}}</ion-option>
+      <ion-option>Neue Location hinzufügen</ion-option>
     </ion-select>
   </ion-item>
 </ion-list>
+  </div>
+    </div>

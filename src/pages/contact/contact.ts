@@ -15,14 +15,14 @@ export class ContactPage {
   articles = [];
 
   ionViewDidEnter(){
-    $.get( "http://62.75.162.57:3000/customerData/", function( data ) {
+    /*$.get( "http://62.75.162.57:3000/customerData/", function( data ) {
       console.log(data);
       data.forEach(element => {
         this.user.push(data);
       });
     $( ".result" ).html( data );
     alert( "Load was performed." );
-  });
+  });*/
 }
 
 }

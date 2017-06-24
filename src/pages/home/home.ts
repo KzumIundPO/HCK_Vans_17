@@ -15,13 +15,11 @@ export class HomePage {
 
   }
 
-  ionViewDidEnter(){
-    $.get( "http://62.75.162.57:3000/customerData/", function( data ) {
-      data.forEach(element => {
-      this.users.push(element);
-      });
-      console.log(this.users);
-  });
-}
+  ionViewDidEnter() {
+    var that = this;
+    $.get("http://62.75.162.57:3000/customerData/", function (data) {
+      that.users.push(data);
+    });
+  }
 
 }
