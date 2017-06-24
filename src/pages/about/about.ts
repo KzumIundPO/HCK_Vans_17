@@ -111,7 +111,7 @@ export class AboutPage {
       var trafficLayer = new google.maps.TrafficLayer();
       trafficLayer.setMap(this.map);
 
-
+      //onClick
       google.maps.event.addListener(this.map, "click", function (event) {
         var lat = event.latLng.lat();
         var lng = event.latLng.lng();
@@ -137,6 +137,40 @@ export class AboutPage {
                 "parkhinweis_lng": 0, 
                 "addresse_on_the_go": results[0].formatted_address
               }),
+              success: function (data, textStatus, jQxhr) {
+                $('#response pre').html(JSON.stringify(data));
+                console.log("SUCCESFULL POST");
+              },
+              error: function (jqXhr, textStatus, errorThrown) {
+                console.log(errorThrown);
+                console.log("ERR POST");
+              }
+            });
+          
+          } else {
+            window.alert('Geocoder failed due to: ' + status);
+          }
+        });
+      });
+
+      //onDoubleClick
+      google.maps.event.addListener(this.map, "doubleClick", function (event) {
+        var lat = event.latLng.lat();
+        var lng = event.latLng.lng();
+        // populate yor box/field with lat, lng
+        window.alert("Lat=" + lat + "; Lng=" + lng);
+
+
+        var latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+        geocoder.geocode({ 'location': latlng }, function (results, status) {
+          if (status === 'OK' && !results[0].formatted_address.includes("Unnamed")) {
+            console.log(results[0].formatted_address);
+            var id = 2;
+            // ---------------------------------------
+            $.ajax({
+              url: 'http://62.75.162.57:3000//updateTarget/' + id + '/' + results[0].formatted_address,
+              type: 'post',
               success: function (data, textStatus, jQxhr) {
                 $('#response pre').html(JSON.stringify(data));
                 console.log("SUCCESFULL POST");

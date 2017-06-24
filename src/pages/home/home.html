@@ -3,12 +3,11 @@
     <ion-title>Profil</ion-title>
   </ion-navbar>
 </ion-header>
-<div align="center">
 <ion-content padding>
   <ion-grid class="grid">
   <ion-row>
-    <ion-col col-3>
-      <img src="https://www.atomix.com.au/media/2015/06/atomix_user31.png" widht="150" height="150">
+    <ion-col col-2>
+      <img src="https://www.atomix.com.au/media/2015/06/atomix_user31.png">
     </ion-col>
     <ion-col col-2>
       <!-- xxx -->
@@ -17,16 +16,16 @@
     <ion-col col-0>
       <ion-list>
         <ion-item>
-        {{user.vorname}}
+        Vorname: {{user.vorname}}
         </ion-item>
         <ion-item>
-        {{user.nachname}}
+        Nachname: {{user.nachname}}
         </ion-item>
         <ion-item>
-        {{user.coins}}
+        Credits: {{user.coins}} <img src="http://www.wakeupland.com/gfx/icon-coins01.png" width="15" height="15">
         </ion-item>
         <ion-item>
-        Ankommende Lieferungen: 3
+        <b>Ankommende Lieferungen: 3</b>
         </ion-item>
       </ion-list>
 </ion-col>
@@ -48,4 +47,3 @@
   </ion-item>
 </ion-list>
   </div>
-    </div>
