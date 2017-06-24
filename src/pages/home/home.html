@@ -1,17 +1,41 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>Profile</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
-</ion-content>
+  <ion-grid class="grid">
+  <ion-row>
+    <ion-col col-3>
+      <img src="http://oendrila313.eventfulindia.com/images/defaultUserImgm.png">
+    </ion-col>
+    <ion-col col-2>
+      <!-- xxx -->
+    </ion-col>
+    <ion-col col-0>
+      <ion-list *ngFor="let user of users">
+        <ion-item>
+          <ion-avatar item-left>
+          <h3>{{user.vorname}}
+          <h3>{{user.nachname}}
+          <h3>{{user.coins}}
+<br>
+<h3>Ankommende Lieferungen: 3</h3>
+<br>
+<br>
+
+<ion-list>
+  <ion-item>
+    <ion-label>Packet Abgabe Ort</ion-label>
+    <ion-select *ngFor="let user of users">
+      <ion-option>{{user.pickUp_person.lat}}, {{user.pickUp_person.lng}}</ion-option>
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <ion-label>Parkmöglichkeit</ion-label>
+    <ion-select *ngFor="let user of users">
+      <ion-option>{{car_parking.lat}}, {{car_parking.lng}}</ion-option>
+    </ion-select>
+  </ion-item>
+</ion-list>

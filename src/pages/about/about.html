@@ -1,11 +1,33 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      About
+      Lieferung verfolgen
     </ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-8>
+        <div #map id="map">Hier sollte die Map angezeigt werden</div>
+      </ion-col>
+      <ion-col col-4>
+        <div #sidebar>
 
+          <ion-list>
+            <ion-list-header>
+              Auslieferungsziele:
+            </ion-list-header>
+            <ion-item *ngFor="let dest of stack" (click)="goToDetail(dest)">
+              <h2>{{dest.strasse}}<br> {{dest.postleitzahl}} {{dest.ort}} </h2>
+              <p>{{dest.vorname}} {{dest.name}}</p>
+            </ion-item>
+
+          </ion-list>
+        </div>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
 </ion-content>
